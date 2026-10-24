@@ -41,3 +41,8 @@ With /O1, native __try/__finally reproduces all 98 bytes modulo four address
 relocations. /O2 emits 140 bytes and /Od 160; /Os also reproduces 98 bytes.
 The native compiler creates the cleanup and scope table. The source contains
 no inline assembly, byte emission, numeric image address, or manual frame.
+
+The emitted `$T315` scope table also matches all 12 retail bytes at VA
+01145890 after binding its one native text-label relocation: the words are
+FFFFFFFF, 00000000, 00DF6F2E. Its action is `$L310` at parent offset 004A.
+The strict scoped gate verifies both the 74-byte entry and the 24-byte action.
