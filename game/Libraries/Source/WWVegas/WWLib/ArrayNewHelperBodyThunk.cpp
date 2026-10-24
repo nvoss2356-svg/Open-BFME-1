@@ -1,81 +1,28 @@
-// cl: /DNDEBUG /MD /GX- /O2 /Ob2
+// cl: /DNDEBUG /MD /GX- /O1
+// Retail MSVC vector-construction iterator at 0x009F6EE4. The ledger keeps
+// its compiler ??_L identity. Native SEH emits the 74-byte entry and the
+// adjacent 24-byte finally action. The one-word member pointer models the
+// private thiscall callback convention without claiming an element identity.
+class Rva009F6EE4Element {};
+typedef void (Rva009F6EE4Element::*Rva009F6EE4Action)();
+typedef char Rva009F6EE4OneWordCallback[
+    sizeof(Rva009F6EE4Action) == sizeof(void *) ? 1 : -1];
+void __stdcall d_009f6d18(void *, unsigned int, int, void *);
 
-__declspec(naked) void ArrayNewHelperBodyThunk()
+void __stdcall ArrayNewHelperBodyThunk(void *array, unsigned int stride, int count,
+    Rva009F6EE4Action construct, void *destroy)
 {
-	__asm {
-		_emit 06Ah
-		_emit 010h
-		_emit 068h
-		_emit 090h
-		_emit 058h
-		_emit 014h
-		_emit 001h
-		_emit 0E8h
-		_emit 098h
-		_emit 00Fh
-		_emit 000h
-		_emit 000h
-		_emit 033h
-		_emit 0C0h
-		_emit 089h
-		_emit 045h
-		_emit 0E0h
-		_emit 089h
-		_emit 045h
-		_emit 0FCh
-		_emit 089h
-		_emit 045h
-		_emit 0E4h
-		_emit 08Bh
-		_emit 045h
-		_emit 0E4h
-		_emit 03Bh
-		_emit 045h
-		_emit 010h
-		_emit 07Dh
-		_emit 013h
-		_emit 08Bh
-		_emit 075h
-		_emit 008h
-		_emit 08Bh
-		_emit 0CEh
-		_emit 0FFh
-		_emit 055h
-		_emit 014h
-		_emit 003h
-		_emit 075h
-		_emit 00Ch
-		_emit 089h
-		_emit 075h
-		_emit 008h
-		_emit 0FFh
-		_emit 045h
-		_emit 0E4h
-		_emit 0EBh
-		_emit 0E5h
-		_emit 0C7h
-		_emit 045h
-		_emit 0E0h
-		_emit 001h
-		_emit 000h
-		_emit 000h
-		_emit 000h
-		_emit 083h
-		_emit 04Dh
-		_emit 0FCh
-		_emit 0FFh
-		_emit 0E8h
-		_emit 008h
-		_emit 000h
-		_emit 000h
-		_emit 000h
-		_emit 0E8h
-		_emit 098h
-		_emit 00Fh
-		_emit 000h
-		_emit 000h
-		_emit 0C2h
-		_emit 014h
-		_emit 000h
-	}
+    int complete = 0;
+    int index;
+    __try {
+        for (index = 0; index < count; ++index) {
+            (((Rva009F6EE4Element *)array)->*construct)();
+            array = (char *)array + stride;
+        }
+        complete = 1;
+    }
+    __finally {
+        if (!complete)
+            d_009f6d18(array, stride, index, destroy);
+    }
 }
