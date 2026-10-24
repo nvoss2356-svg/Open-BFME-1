@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "sha256": "9ccb0f0a4510361129ef83a128893be57dc9ed8cc3de583235c423531ce68985",
+  "symbol": "?rva003D59C0@@YGHHPBURva003D59C0Obj@@HH@Z",
+  "score_kind": "measured",
+  "score": 0.7692,
+  "source": "// ?rva003D59C0@@YGHHPBURva003D59C0Obj@@HH@Z\n// partial score=0.7692 date=2026-10-24\n// cl: /O2 /Ob0 /DNDEBUG /DWIN32 /D_WINDOWS /MD\nstruct Rva003D59C0Obj { char pad[12]; unsigned low:3; unsigned:15; signed high:1;unsigned:13; };\nint __stdcall rva003D59C0(int,const Rva003D59C0Obj *o,int,int) { if(o->low != 0 && o->low != 1) return 1; return o->high & 1; }\n"
+}
