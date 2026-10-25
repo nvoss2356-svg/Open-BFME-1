@@ -26,3 +26,31 @@ void __stdcall ArrayNewHelperBodyThunk(void *array, unsigned int stride, int cou
             d_009f6d18(array, stride, index, destroy);
     }
 }
+
+// The adjacent retail destructor iterator is supplied by the pinned VC7 CRT
+// archive. Reconstructing it here lets the compiler produce its 24-byte
+// finally action while preserving that archive as the iterator's owner.
+union Rva009F6D76Callback {
+    Rva009F6EE4Action member;
+    void *raw;
+};
+typedef char Rva009F6D76OneWordCallback[
+    sizeof(Rva009F6D76Callback) == sizeof(void *) ? 1 : -1];
+
+void __stdcall ArrayDeleteHelperBodyThunk(void *array, unsigned int stride,
+    int count, Rva009F6D76Callback destroy)
+{
+    int complete = 0;
+    array = (char *)array + stride * count;
+    __try {
+        while (--count >= 0) {
+            array = (char *)array - stride;
+            (((Rva009F6EE4Element *)array)->*destroy.member)();
+        }
+        complete = 1;
+    }
+    __finally {
+        if (!complete)
+            d_009f6d18(array, stride, count, destroy.raw);
+    }
+}

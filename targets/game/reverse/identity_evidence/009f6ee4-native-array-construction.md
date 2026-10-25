@@ -42,7 +42,37 @@ relocations. /O2 emits 140 bytes and /Od 160; /Os also reproduces 98 bytes.
 The native compiler creates the cleanup and scope table. The source contains
 no inline assembly, byte emission, numeric image address, or manual frame.
 
-The emitted `$T315` scope table also matches all 12 retail bytes at VA
+The emitted `$T343` scope table also matches all 12 retail bytes at VA
 01145890 after binding its one native text-label relocation: the words are
-FFFFFFFF, 00000000, 00DF6F2E. Its action is `$L310` at parent offset 004A.
+FFFFFFFF, 00000000, 00DF6F2E. Its action aliases are `$L336` and `$L338` at
+parent offset 004A; the ledger uses `$L338` for the action body.
 The strict scoped gate verifies both the 74-byte entry and the 24-byte action.
+
+## Native destructor cleanup emitter, 009F6DBE
+
+The adjacent CRT array-destructor iterator remains owned by the pinned
+`ehvecdtr.obj` member and its canonical `??_M@YGXPAXIHP6EX0@Z@Z` identity.
+The same translation unit now contains an independently exact typed C++
+reconstruction solely to emit its compiler-generated finally action; it does
+not replace or claim the canonical 72-byte parent row.
+
+The callback is a one-word union of the checked member-pointer representation
+and its opaque machine word. The member view makes the destructor call use ECX;
+the opaque view forwards the unchanged callback word to the same independently
+decoded `d_009f6d18` dependency. The source computes the end pointer, decrements
+the count before testing, walks backward by stride, calls the destructor, and
+sets its completion flag only after the loop. Native `__try`/`__finally` then
+emits the retail failure path without assembly or byte emission.
+
+The complete native parent plus action is 96 bytes and matches retail modulo
+four relocation slots: 72 bytes through RET 16 at RVA 009F6D76, followed by
+the 24-byte action at RVA 009F6DBE. The action is `$L354` at parent offset 0048.
+Its only branch tests the parent's completion flag; on failure it forwards the
+current pointer, stride, remaining signed count, and callback to ArrayUnwind,
+then returns.
+
+The emitted `$T357` scope table matches all 12 retail bytes at VA 01145880 after
+binding its one native text-label relocation: FFFFFFFF, 00000000, 00DF6DBE.
+The relocation targets `$L352`, an alias of `$L354` at parent offset 0048.
+Together the direct parent call and exact SEH table prove the action's ownership
+without inferring it from adjacency.
