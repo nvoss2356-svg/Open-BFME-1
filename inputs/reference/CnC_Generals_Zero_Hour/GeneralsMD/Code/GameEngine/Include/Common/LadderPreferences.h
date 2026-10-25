@@ -45,6 +45,8 @@
 class LadderPref
 {
 public:
+	LadderPref& operator=(const LadderPref& other);
+
 	UnicodeString name;
 	AsciiString address;
 	UnsignedShort port;

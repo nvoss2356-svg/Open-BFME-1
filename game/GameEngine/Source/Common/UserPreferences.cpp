@@ -992,6 +992,22 @@ IgnorePrefMap IgnorePreferences::getIgnores(void)
 // LadderPreferences base class 
 //-----------------------------------------------------------------------------
 
+class Rva00630D00UStr
+{
+public:
+	Rva00630D00UStr &operator=( const Rva00630D00UStr &other );
+};
+
+LadderPref &LadderPref::operator=( const LadderPref &other )
+{
+	reinterpret_cast<Rva00630D00UStr &>( name ) =
+		reinterpret_cast<const Rva00630D00UStr &>( other.name );
+	address = other.address;
+	port = other.port;
+	lastPlayDate = other.lastPlayDate;
+	return *this;
+}
+
 LadderPreferences::~LadderPreferences()
 {
 }
