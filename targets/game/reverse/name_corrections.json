@@ -21020,5 +21020,15 @@
   "after_sha256": "9cf03d608830d6bb61af3ea806a394e1cc3ea20fa7a928f8dea5e50e7e245c2a",
   "evidence": "targets/game/reverse/identity_evidence/007e2f50-bfme996-readpacket-caller.md",
   "reason": "ForwardView was an ABI-only stand-in, not a recovered identity. ILT 0x0003F80F jumps to the newly matched BfmeB996::readPacket at 0x007E2F50; the caller now declares that real callee and remains byte-exact."
+ },
+ {
+  "old_path": "game/GameEngine/Source/GameLogic/Map/Rva0019B030LoadBuildLists.cpp",
+  "new_path": "game/GameEngine/Source/GameLogic/Map/Rva0019B030LoadBuildLists.cpp",
+  "old_name": "ParserBase0019B030",
+  "new_name": "BfmeParserBindingBaseVE",
+  "before_sha256": "2e019fbb386a592bc8795b02f5b59b8fb4862bfc07d4302525d1f3db40f41cf5",
+  "after_sha256": "0a58e541f44971e1937d7a1e64995ad3d18e6fc0fd3db54f49c4898d15ec5def",
+  "evidence": "targets/game/reverse/identity_evidence/parser_binding_ctor_001920c0.md",
+  "reason": "The old address-derived base name emitted a second vtable identity at VA 0x0107C7D0. dir32_addresses.csv independently records that retail address as BfmeParserBindingBaseVE; the existing binding-constructor evidence ties the base vtable to the same parser-binding family."
  }
 ]

@@ -22,3 +22,24 @@ struct GeometryRecord
 };
 
 template class _STL::vector<GeometryRecord>;
+
+// Retail 0x00100570 forwards this vector's [begin, finish) range to the
+// canonical GeometryRecord erase specialization.  No retail ILT slot names
+// the clear specialization, so the callable identity remains RVA-derived.
+class Rva00100570GeometryRecordVector
+{
+public:
+	void method();
+
+private:
+	GeometryRecord *m_begin;
+	GeometryRecord *m_finish;
+	GeometryRecord *m_end;
+};
+
+void Rva00100570GeometryRecordVector::method()
+{
+	_STL::vector<GeometryRecord> *records =
+		reinterpret_cast<_STL::vector<GeometryRecord> *>(this);
+	records->erase(m_begin, m_finish);
+}

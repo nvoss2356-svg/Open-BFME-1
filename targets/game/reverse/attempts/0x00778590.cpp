@@ -543,6 +543,7 @@ public:
 	void rva00769720();
 	void rebuildWeaponRecoilInfo(Rva00778590Template *rec);
 	void rva0076CB10();
+	Drawable *getDrawable() const { return m_drawable; }
 
 	const Rva00778590State *m_curState;                 // +0x10
 	char m_pad14[0x24 - 0x14];
@@ -579,7 +580,7 @@ bool W3DModelDraw::rva00778590(const Rva00778590State *newState, bool force, Rva
 	if (newState == 0)
 		return false;
 
-	m_drawable->setName(newState->m_3C);
+	getDrawable()->setName(newState->m_3C);
 	bool changed = m_A0 != m_A4;
 	m_A0 = m_A4;
 	if (m_curState != 0 && m_curState == newState && !changed && !force)
@@ -610,11 +611,12 @@ bool W3DModelDraw::rva00778590(const Rva00778590State *newState, bool force, Rva
 		nukeCurrentRender(&transform);
 
 		Drawable *draw = m_drawable;
+		AsciiString &stateName = m_38;
 		modelName = resolveModelVariant(newState->getModelName(draw->m_timeOfDay));
 
 		int randomTextureCount = m_moduleData->m_randomTextures.size();
 		int timeOfDayCount = m_moduleData->m_timeOfDayModels.size();
-		m_38 = "";
+		stateName = "";
 
 		if (rva00778590IsEmpty(newState->getModelName(draw->m_timeOfDay)))
 		{
@@ -626,7 +628,7 @@ bool W3DModelDraw::rva00778590(const Rva00778590State *newState, bool force, Rva
 			_STL::vector<_STL::string> subNames;
 			_STL::vector<_STL::string> none;
 			Rva00778590Rec rec(m_moduleData->m_specialModel);
-			m_38 = rec.m_name.c_str();
+			stateName = rec.m_name.c_str();
 			names.push_back(_STL::string(rec.m_name.c_str()));
 			subNames.push_back(_STL::string(rec.m_subName.c_str()));
 			m_renderObject = Rva009016A0CreateRenderObject(modelName.str(), draw->getScale(), m_hexColor, &none, &names, &subNames, rec.m_28);
@@ -656,7 +658,7 @@ bool W3DModelDraw::rva00778590(const Rva00778590State *newState, bool force, Rva
 			_STL::vector<_STL::string> names;
 			_STL::vector<_STL::string> subNames;
 			_STL::vector<_STL::string> none;
-			m_38 = rec.m_name.c_str();
+			stateName = rec.m_name.c_str();
 			names.push_back(_STL::string(rec.m_name.c_str()));
 			subNames.push_back(_STL::string(rec.m_subName.c_str()));
 			if (found)

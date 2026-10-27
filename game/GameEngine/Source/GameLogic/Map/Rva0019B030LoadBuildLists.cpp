@@ -102,6 +102,8 @@ public:
 };
 
 // The binding's owner class (identity_evidence/parser_binding_ctor_001920c0.md).
+// This TU formerly emitted ??_7ParserBase0019B030@@6B@ for the base vtable;
+// retail uses the established ??_7BfmeParserBindingBaseVE@@6B@ identity.
 class SidesList;
 
 #pragma pointers_to_members(full_generality, multiple_inheritance)
@@ -122,13 +124,13 @@ typedef bool (*CallbackBase0019B030)(DataChunkInput &, DataChunkInfo *, void *);
 extern void j_0001579e();
 extern void j_0000f51a();
 extern void j_00013c6e();
-class ParserBase0019B030 {
+class BfmeParserBindingBaseVE {
 public:
-  ParserBase0019B030(DataChunkInput *table, const AsciiString &name, const AsciiString &parent) {
+  BfmeParserBindingBaseVE(DataChunkInput *table, const AsciiString &name, const AsciiString &parent) {
     table_ = table;
     parser_ = table->registerParser(name, parent, (CallbackBase0019B030)j_0001579e, this);
   }
-  ~ParserBase0019B030() {
+  ~BfmeParserBindingBaseVE() {
     reinterpret_cast<BfmeSubVE *>(table_)->bfmeDropVE(parser_);
   }
   // Retail base vtable 0x0107C7D0 and binding vtable 0x0109BFD4 hold two
@@ -142,13 +144,13 @@ protected:
   UserParser *parser_;
 };
 
-class BfmeParserBindingVE : public ParserBase0019B030 {
+class BfmeParserBindingVE : public BfmeParserBindingBaseVE {
   SidesList *owner_;
   BuildListCallback0019B030 callback_;
 public:
   BfmeParserBindingVE(SidesList *owner, BuildListCallback0019B030 callback, DataChunkInput *table,
                       const AsciiString &name, const AsciiString &parent)
-      : ParserBase0019B030(table, name, parent) {
+      : BfmeParserBindingBaseVE(table, name, parent) {
     owner_ = owner;
     callback_ = callback;
   }

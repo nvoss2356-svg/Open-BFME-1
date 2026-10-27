@@ -37,3 +37,13 @@ The new decorated name is
 
 No other matched C++ caller names the old decorated symbol. The two other
 users of this binding (0x0019EC80 and 0x0074ACB0) inline their own copies.
+
+## Base vtable identity
+
+The base vtable stored by those inline constructors is independently recorded
+at VA `0x0107C7D0` in `dir32_addresses.csv` as
+`??_7BfmeParserBindingBaseVE@@6B@`. The `0x0019B030` loader previously emitted
+the TU-local placeholder `??_7ParserBase0019B030@@6B@` for that same retail
+address. Naming its base class `BfmeParserBindingBaseVE` preserves the exact
+641-byte loader while making the object relocation carry the established
+retail vtable identity.
