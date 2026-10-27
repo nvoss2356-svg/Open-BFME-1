@@ -10,25 +10,12 @@
 // same instructions but call different _Construct ILTs, so they are emitted as
 // separate strict bodies below instead of masked gen-aliases.
 //
-// The PrereqUnitRec body calls the independently pinned BfmeElementConstruct
-// helper. The ProductionPrerequisite body still uses its ordinary _Construct
-// specialization; both calls stay out of line exactly as retail emits them.
-//
-// THESE MERGE WHERE THE _Construct PAIR COULD NOT, and the difference is worth
-// keeping because the two pairs look identical from outside. Both pairs are a
-// ProductionPrerequisite file and a PrereqUnitRec file, same flags, same shape,
-// each hand-writing an _STL template and then explicitly instantiating it. The
-// Construct pair cannot share a TU because the two files define the SAME
-// template, _STL::_Construct<T, U>, with DIFFERENT bodies -- one forwarding to
-// ProductionPrerequisiteConstructShim and one to PrereqUnitRecConstructShim --
-// and one TU cannot hold two definitions of one template. Here the shared
-// template's body is character-for-character the same in both files, so one
-// definition serves both instantiations.
-//
-// So the test for this shape is not "are these two files alike" but "do they
-// give the shared template the same body". The Construct pair also spelled
-// ProductionPrerequisite as a NAMESPACE where this one spells it a class, which
-// is a second, independent reason that pair stays apart.
+// The two primary bodies call independently pinned helpers:
+// BfmeElementConstruct at 0x0003C1A0 and
+// BfmeProductionPrerequisiteConstruct at 0x000027A2. Their copied loops call
+// the ordinary _Construct specializations at 0x00028957 and 0x0003AA26. All
+// four loops therefore need separate C++ bodies even though their non-call
+// instructions have the same template shape.
 //
 // The family has a third pair of the same appearance and the test settles it
 // too. ProductionPrerequisiteAllocateAndCopyBody.cpp and
@@ -83,6 +70,9 @@ void _Construct(T1 *destination, const T2 &value);
 void __cdecl BfmeElementConstruct(
     void *destination,
     const ProductionPrerequisite::PrereqUnitRec &value);
+void __cdecl BfmeProductionPrerequisiteConstruct(
+    void *destination,
+    const ProductionPrerequisite &value);
 
 template <class In, class Out>
 Out __uninitialized_copy(In first, In last, Out result, const __false_type &)
@@ -118,8 +108,24 @@ ProductionPrerequisite::PrereqUnitRec *__uninitialized_copy<
 }
 
 // ??$__uninitialized_copy@PBVProductionPrerequisite@@PAV1@@_STL@@...
-template ProductionPrerequisite *__uninitialized_copy<const ProductionPrerequisite *, ProductionPrerequisite *>(
-    const ProductionPrerequisite *, const ProductionPrerequisite *, ProductionPrerequisite *, const __false_type &);
+template <>
+ProductionPrerequisite *__uninitialized_copy<
+    const ProductionPrerequisite *,
+    ProductionPrerequisite *>(
+    const ProductionPrerequisite *first,
+    const ProductionPrerequisite *last,
+    ProductionPrerequisite *result,
+    const __false_type &)
+{
+	ProductionPrerequisite *current = result;
+	while (first != last)
+	{
+		BfmeProductionPrerequisiteConstruct(current, *first);
+		++first;
+		++current;
+	}
+	return current;
+}
 
 extern "C" ProductionPrerequisite::PrereqUnitRec *__cdecl
 bfme_PrereqUnitRecUninitializedCopyDuplicate(
