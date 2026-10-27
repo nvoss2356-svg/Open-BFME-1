@@ -10,9 +10,9 @@
 // same instructions but call different _Construct ILTs, so they are emitted as
 // separate strict bodies below instead of masked gen-aliases.
 //
-// In both, the per-element _Construct is DECLARED WITHOUT A BODY so that it
-// stays out of line, exactly as retail calls it. That is the load-bearing part
-// of both files and it is now written once.
+// The PrereqUnitRec body calls the independently pinned BfmeElementConstruct
+// helper. The ProductionPrerequisite body still uses its ordinary _Construct
+// specialization; both calls stay out of line exactly as retail emits them.
 //
 // THESE MERGE WHERE THE _Construct PAIR COULD NOT, and the difference is worth
 // keeping because the two pairs look identical from outside. Both pairs are a
@@ -80,6 +80,10 @@ struct __false_type
 template <class T1, class T2>
 void _Construct(T1 *destination, const T2 &value);
 
+void __cdecl BfmeElementConstruct(
+    void *destination,
+    const ProductionPrerequisite::PrereqUnitRec &value);
+
 template <class In, class Out>
 Out __uninitialized_copy(In first, In last, Out result, const __false_type &)
 {
@@ -94,8 +98,24 @@ Out __uninitialized_copy(In first, In last, Out result, const __false_type &)
 }
 
 // ??$__uninitialized_copy@PBUPrereqUnitRec@ProductionPrerequisite@@PAU12@@_STL@@...
-template ProductionPrerequisite::PrereqUnitRec *__uninitialized_copy<const ProductionPrerequisite::PrereqUnitRec *, ProductionPrerequisite::PrereqUnitRec *>(
-    const ProductionPrerequisite::PrereqUnitRec *, const ProductionPrerequisite::PrereqUnitRec *, ProductionPrerequisite::PrereqUnitRec *, const __false_type &);
+template <>
+ProductionPrerequisite::PrereqUnitRec *__uninitialized_copy<
+    const ProductionPrerequisite::PrereqUnitRec *,
+    ProductionPrerequisite::PrereqUnitRec *>(
+    const ProductionPrerequisite::PrereqUnitRec *first,
+    const ProductionPrerequisite::PrereqUnitRec *last,
+    ProductionPrerequisite::PrereqUnitRec *result,
+    const __false_type &)
+{
+	ProductionPrerequisite::PrereqUnitRec *current = result;
+	while (first != last)
+	{
+		BfmeElementConstruct(current, *first);
+		++first;
+		++current;
+	}
+	return current;
+}
 
 // ??$__uninitialized_copy@PBVProductionPrerequisite@@PAV1@@_STL@@...
 template ProductionPrerequisite *__uninitialized_copy<const ProductionPrerequisite *, ProductionPrerequisite *>(
