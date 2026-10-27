@@ -172,7 +172,6 @@ dir32,0x0107533C,?g_rva0107533C@@3MB,"retail 0x0107533C is already recorded as ?
 dir32,0x01075350,?BfmeZeroRange@@3MA,"retail 0x01075350 is already recorded as ?BfmeBoundaryZero3D@@3MB (+25 more); reference that name, not a new one"
 dir32,0x01075350,?BfmeZeroRange@@3MB,"retail 0x01075350 is already recorded as ?BfmeBoundaryZero3D@@3MB (+25 more); reference that name, not a new one"
 dir32,0x01075350,?g_rva01075350@@3MB,"retail 0x01075350 is already recorded as ?BfmeBoundaryZero3D@@3MB (+25 more); reference that name, not a new one"
-dir32,0x0107C7D0,??_7ParserBase0019B030@@6B@,"retail 0x0107C7D0 is already recorded as ??_7BfmeParserBindingBaseVE@@6B@ (+3 more); reference that name, not a new one"
 dir32,0x0107C7DC,??_7MapObjectBase@@6B@,"retail 0x0107C7DC is already recorded as ??_7Rva00087320@@6B@ (+1 more); reference that name, not a new one"
 dir32,0x0107C7DC,?RvaData0107C7DC@@3PAIA,"retail 0x0107C7DC is already recorded as ??_7Rva00087320@@6B@ (+1 more); reference that name, not a new one"
 dir32,0x0107C7E0,??_7MapObject@@6B@,"nothing in the ledger owns 0x0107C7E0. Give the datum a data row first (tools/add_data_match.py), or use an address name (g_Va<VA>)"
