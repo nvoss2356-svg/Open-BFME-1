@@ -6,9 +6,9 @@
 //   0x003ABB40  45B  __uninitialized_copy<const ProductionPrerequisite *, ProductionPrerequisite *>
 //
 // Their 5-byte incremental-link thunks at 0x000178B4 and 0x0001FFEB live
-// elsewhere and reach these. The loop at 0x005827C0 has the same instructions
-// as the first body but calls a different _Construct ILT, so it is emitted as a
-// separate strict body below. The 0x00784DF0 copy still rides with its twin.
+// elsewhere and reach these. The loops at 0x005827C0 and 0x00784DF0 have the
+// same instructions but call different _Construct ILTs, so they are emitted as
+// separate strict bodies below instead of masked gen-aliases.
 //
 // In both, the per-element _Construct is DECLARED WITHOUT A BODY so that it
 // stays out of line, exactly as retail calls it. That is the load-bearing part
@@ -109,6 +109,23 @@ bfme_PrereqUnitRecUninitializedCopyDuplicate(
     const __false_type &)
 {
 	ProductionPrerequisite::PrereqUnitRec *current = result;
+	while (first != last)
+	{
+		_Construct(current, *first);
+		++first;
+		++current;
+	}
+	return current;
+}
+
+extern "C" ProductionPrerequisite *__cdecl
+bfme_ProductionPrerequisiteUninitializedCopyDuplicate(
+    const ProductionPrerequisite *first,
+    const ProductionPrerequisite *last,
+    ProductionPrerequisite *result,
+    const __false_type &)
+{
+	ProductionPrerequisite *current = result;
 	while (first != last)
 	{
 		_Construct(current, *first);
